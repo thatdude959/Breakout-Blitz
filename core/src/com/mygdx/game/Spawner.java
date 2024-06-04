@@ -22,7 +22,13 @@ public class Spawner {
         // Box2D takes HALF width and HALF height from center
         shape.setAsBox((float) width / 2 / PPM, (float) height / 2 / PPM);
 
-        pBody.createFixture(shape, 1.0f);
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1f;
+        fixtureDef.friction = 0f;
+        fixtureDef.restitution = 1;
+
+        pBody.createFixture(fixtureDef);
         shape.dispose();
 
         return pBody;

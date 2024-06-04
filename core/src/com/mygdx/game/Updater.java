@@ -12,20 +12,20 @@ import static com.mygdx.game.utils.Constants.BALL_SPEED;
 import static com.mygdx.game.utils.Constants.PPM;
 
 public class Updater {
-    public static void update(float deltaTime, World world, OrthographicCamera camera, Body paddle, Body ball) {
+    public static void update(float deltaTime, World world, OrthographicCamera camera, TotorialBox paddle) {
         world.step(1 / 60f, 6, 2);
         cameraUpdate(deltaTime, camera);
         inputUpdate(deltaTime, paddle);
 
-        Vector2 ballVel = ball.getLinearVelocity();
-        ballVel.nor();
-        ball.setLinearVelocity(ballVel.scl(BALL_SPEED));
+//        Vector2 ballVel = ball.getLinearVelocity();
+//        ballVel.nor();
+//        ball.setLinearVelocity(ballVel.scl(BALL_SPEED));
     }
 
-    private static void inputUpdate(float deltaTime, Body paddle) {
+    private static void inputUpdate(float deltaTime, TotorialBox paddle) {
         int horizontalVelocity = 0;
         //checks paddle collision with left wall
-        if (Gdx.input.isKeyPressed(Input.Keys.A) && paddle.getPosition().x * PPM - 50 >= 0) {
+        if (Gdx.input.isKeyPressed(Input.Keys.A) && paddle.body.getPosition().x * PPM - 50 >= 0) {
             if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
                 horizontalVelocity -= 5;
             } else {
@@ -33,14 +33,14 @@ public class Updater {
             }
         }
         //checks paddle collision with right wall
-        if (Gdx.input.isKeyPressed(Input.Keys.D) && paddle.getPosition().x * PPM + 50 <= Gdx.graphics.getWidth()) {
+        if (Gdx.input.isKeyPressed(Input.Keys.D) && paddle.body.getPosition().x * PPM + 50 <= Gdx.graphics.getWidth()) {
             if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
                 horizontalVelocity += 5;
             } else {
                 horizontalVelocity += 1;
             }
         }
-        paddle.setLinearVelocity(horizontalVelocity * 10, paddle.getLinearVelocity().y);
+        paddle.body.setLinearVelocity(horizontalVelocity * 10, paddle.body.getLinearVelocity().y);
     }
 
     private static void cameraUpdate(float deltaTime, OrthographicCamera camera) {
