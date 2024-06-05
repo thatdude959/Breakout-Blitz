@@ -3,11 +3,14 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import entitys.*;
 import handler.ContactListener;
 import handler.Updater;
@@ -51,13 +54,13 @@ public class BreakoutBlitz extends ApplicationAdapter {
             }
         }
         //border
-        floor =  new Floor(world,"FLOOR",Gdx.graphics.getWidth() / 2, -1, Gdx.graphics.getWidth(), 0);
+        floor = new Floor(world, "FLOOR", Gdx.graphics.getWidth() / 2, -1, Gdx.graphics.getWidth(), 0);
         sTop = Spawner.box(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), 0, false, world);
         sLeft = Spawner.box(0, Gdx.graphics.getHeight() / 2, 0, Gdx.graphics.getHeight(), false, world);
         sRight = Spawner.box(Gdx.graphics.getWidth() + 1, Gdx.graphics.getHeight() / 2, 0, Gdx.graphics.getHeight(), false, world);
 
         ball = new Ball(world, "BALL", 360, 160, 10);
-        float theta = (float) (Math.PI/2);
+        float theta = (float) (Math.PI / 2);
         ball.body.setLinearVelocity((new Vector2((float) Math.cos(theta), (float) Math.sin(theta)).scl(BALL_SPEED)));
     }
 
@@ -67,6 +70,23 @@ public class BreakoutBlitz extends ApplicationAdapter {
         ScreenUtils.clear(0, 0, 0, 1);
 
         b2dr.render(world, camera.combined.scl(PPM));
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        double widthf = width;
+        double heightf = height;
+
+        camera.viewportWidth = 720;
+        if (widthf / heightf < 1.5) {
+            camera.viewportHeight = (float) (camera.viewportWidth * heightf / widthf);
+        } else if (widthf / heightf > 1.5) {
+            camera.viewportWidth = (float) ((camera.viewportHeight * widthf)/heightf);
+        }
+
+        System.out.println(camera.viewportWidth + " " + camera.viewportHeight);
+        System.out.println(widthf + " " + heightf);
+        System.out.println(widthf / heightf + " h/w " + heightf / widthf);
     }
 
     @Override

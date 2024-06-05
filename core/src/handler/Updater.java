@@ -10,8 +10,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import entitys.Ball;
 import entitys.Paddle;
 
-import java.util.ArrayList;
-
 import static com.mygdx.game.utils.Constants.BALL_SPEED;
 import static com.mygdx.game.utils.Constants.PPM;
 
@@ -67,7 +65,7 @@ public class Updater {
     }
 
     private static void cameraUpdate(float deltaTime, OrthographicCamera camera) {
-        camera.position.set(new Vector3((float) Gdx.graphics.getWidth() / 2, (float) Gdx.graphics.getHeight() / 2, 0));
+        camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight/2f, 0);
         camera.update();
     }
 }
