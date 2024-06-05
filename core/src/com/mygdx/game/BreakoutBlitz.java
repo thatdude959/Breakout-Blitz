@@ -2,21 +2,15 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
+import entitys.*;
+import handler.ContactListener;
+import handler.Updater;
 
 import java.util.ArrayList;
 
@@ -29,9 +23,12 @@ public class BreakoutBlitz extends ApplicationAdapter {
     private Box2DDebugRenderer b2dr;
     private World world;
 
-    private TotorialBox paddle, obj1, obj2;
-    private Body player, ball, sLeft, sRight, sTop, sBottom, brick;
-//    private ArrayList<Body> bricks;
+    private Body player, sLeft, sRight, sTop;
+    private Floor floor;
+    private Paddle paddle;
+    private Ball ball;
+    private ArrayList<Brick> bricks;
+    private ContactListener contactListener;
 
     @Override
     public void create() {
@@ -39,29 +36,34 @@ public class BreakoutBlitz extends ApplicationAdapter {
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         world = new World(new Vector2(0, 0), false);
-        world.setContactListener(new ContactListener());
+        contactListener = new ContactListener();
+        world.setContactListener(contactListener);
         b2dr = new Box2DDebugRenderer();
 
-        paddle = new TotorialBox(world, "PADDLE", 120,75);
-        obj1 = new TotorialBox(world,"OBJ1",75,75);
-        obj1 = new TotorialBox(world,"OBJ2",175,75);
-//        paddle = Spawner.box(360, 15, 100, 10, true, world);
-//        brick = Spawner.box(360, 240, 70, 35, false, world);
-//        //border
-        sBottom = Spawner.box(Gdx.graphics.getWidth() / 2, -1, Gdx.graphics.getWidth(), 0, false, world);
+        paddle = new Paddle(world, "PADDLE", 360, 15, 100, 10);
+
+        bricks = new ArrayList<Brick>();
+        for (int i = 0; i < 4; i++) {
+            int y = Gdx.graphics.getHeight() - 25 - 40 * i;
+            for (int j = 0; j < 9; j++) {
+                int x = 40 + 80 * j;
+                bricks.add(new Brick(world, "BRICK", x, y, 75, 35));
+            }
+        }
+        //border
+        floor =  new Floor(world,"FLOOR",Gdx.graphics.getWidth() / 2, -1, Gdx.graphics.getWidth(), 0);
         sTop = Spawner.box(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), 0, false, world);
         sLeft = Spawner.box(0, Gdx.graphics.getHeight() / 2, 0, Gdx.graphics.getHeight(), false, world);
         sRight = Spawner.box(Gdx.graphics.getWidth() + 1, Gdx.graphics.getHeight() / 2, 0, Gdx.graphics.getHeight(), false, world);
-//
-//        ball = Spawner.ball(360, 180, 10, world);
-//        float theta = 0.7f;
-//        ball.setLinearVelocity(new Vector2((float) Math.cos(theta), (float) Math.sin(theta)).scl(BALL_SPEED));
+
+        ball = new Ball(world, "BALL", 360, 160, 10);
+        float theta = (float) (Math.PI/2);
+        ball.body.setLinearVelocity((new Vector2((float) Math.cos(theta), (float) Math.sin(theta)).scl(BALL_SPEED)));
     }
 
     @Override
     public void render() {
-        Updater.update(Gdx.graphics.getDeltaTime(), world, camera,paddle);
-        //Updater.update(Gdx.graphics.getDeltaTime(), world, camera, paddle, ball);
+        Updater.update(Gdx.graphics.getDeltaTime(), world, camera, paddle, ball, contactListener);
         ScreenUtils.clear(0, 0, 0, 1);
 
         b2dr.render(world, camera.combined.scl(PPM));
