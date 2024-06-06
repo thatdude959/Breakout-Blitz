@@ -6,6 +6,7 @@ import entitys.Ball;
 import entitys.Brick;
 import entitys.Floor;
 import entitys.Paddle;
+import screens.GameScreen;
 
 import java.util.ArrayList;
 
@@ -14,11 +15,13 @@ import static com.mygdx.game.utils.Constants.PPM;
 public class ContactListener implements com.badlogic.gdx.physics.box2d.ContactListener {
     public ArrayList<Body> destroyList;
     public boolean isPaddleHit;
+    public boolean isFloorHit;
     public float paddleHitLocation;
 
     public ContactListener() {
         destroyList = new ArrayList<Body>();
         isPaddleHit = false;
+        isFloorHit = false;
         paddleHitLocation = 0;
     }
 
@@ -40,12 +43,11 @@ public class ContactListener implements com.badlogic.gdx.physics.box2d.ContactLi
                 ball = (Ball) fb.getUserData();
                 paddle = (Paddle) fa.getUserData();
             }
-            ball.hit();
             if (contact.getWorldManifold().getNumberOfContactPoints() > 0) {
                 if (contact.getWorldManifold().getNormal().y > 0.99){
                     Vector2 worldHitPoint = contact.getWorldManifold().getPoints()[0];
                     Vector2 paddleLocation = paddle.body.getPosition();
-                    float paddleWidth = 100 / PPM;
+                    float paddleWidth = 150 / PPM;
                     paddleHitLocation = Math.max(-1, Math.min(1, (worldHitPoint.x - paddleLocation.x) / paddleWidth * 2));
                     isPaddleHit = true;
                 }
@@ -62,7 +64,6 @@ public class ContactListener implements com.badlogic.gdx.physics.box2d.ContactLi
                 ball = (Ball) fb.getUserData();
                 brick = (Brick) fa.getUserData();
             }
-            brick.hit();
             destroyList.add(brick.body);
         }
 
@@ -76,8 +77,8 @@ public class ContactListener implements com.badlogic.gdx.physics.box2d.ContactLi
                 ball = (Ball) fb.getUserData();
                 floor = (Floor) fa.getUserData();
             }
-            ball.hit();
             destroyList.add(ball.body);
+            isFloorHit = true;
         }
     }
 

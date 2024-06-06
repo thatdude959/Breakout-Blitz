@@ -34,8 +34,4 @@ public class Floor {
         this.body = world.createBody(bDef);
         this.body.createFixture(fixtureDef).setUserData(this);
     }
-
-    public void hit() {
-        System.out.println(id + "hit");
-    }
 }

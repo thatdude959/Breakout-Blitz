@@ -8,7 +8,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import entitys.Ball;
+import entitys.Brick;
 import entitys.Paddle;
+import screens.GameScreen;
 
 import static com.mygdx.game.utils.Constants.BALL_SPEED;
 import static com.mygdx.game.utils.Constants.PPM;
@@ -20,14 +22,33 @@ public class Updater {
         cameraUpdate(deltaTime, camera);
         inputUpdate(deltaTime, paddle);
 
+        if (contactListener.destroyList != null) {
+            for (Body body : contactListener.destroyList) {
+                world.destroyBody(body);
+            }
+            for (Body body : contactListener.destroyList) {
+                GameScreen.bricks.removeIf(brick -> brick.body == body);
+            }
+            contactListener.destroyList.clear();
+        }
+
         Vector2 ballVel = ball.body.getLinearVelocity();
+        if (ballVel.angleDeg() > 10 && ballVel.angleDeg() < 0) {
+            ballVel.setAngleDeg(20);
+        }
+        if (ballVel.angleDeg() > 350 && ballVel.angleDeg() < 360) {
+            ballVel.setAngleDeg(20);
+        }
+        if (ballVel.angleDeg() > 170 && ballVel.angleDeg() < 190) {
+            ballVel.setAngleDeg(160);
+        }
         ballVel.nor();
 
         if (contactListener.isPaddleHit) {
             float angle = ballVel.angleDeg();
             angle = angle - contactListener.paddleHitLocation * 45;
             angle = Math.max(20, Math.min(160, angle));
-            ballVel = new Vector2(1,0).rotateDeg(angle);
+            ballVel = new Vector2(1, 0).rotateDeg(angle);
 
             contactListener.isPaddleHit = false;
             contactListener.paddleHitLocation = 0;
@@ -35,12 +56,6 @@ public class Updater {
 
         ball.body.setLinearVelocity(ballVel.scl(BALL_SPEED));
 
-        if (contactListener.destroyList != null) {
-            for (Body body : contactListener.destroyList) {
-                world.destroyBody(body);
-            }
-            contactListener.destroyList.clear();
-        }
     }
 
     private static void inputUpdate(float deltaTime, Paddle paddle) {
@@ -65,7 +80,7 @@ public class Updater {
     }
 
     private static void cameraUpdate(float deltaTime, OrthographicCamera camera) {
-        camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight/2f, 0);
+        camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
         camera.update();
     }
 }
