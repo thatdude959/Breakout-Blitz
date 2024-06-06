@@ -69,7 +69,7 @@ public class Updater {
             }
         }
         //checks paddle collision with right wall
-        if (Gdx.input.isKeyPressed(Input.Keys.D) && paddle.body.getPosition().x * PPM + 50 <= Gdx.graphics.getWidth()) {
+        if (Gdx.input.isKeyPressed(Input.Keys.D) && paddle.body.getPosition().x * PPM + 50 <= 720) {
             if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
                 horizontalVelocity += 1.75f;
             } else {

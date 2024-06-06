@@ -44,23 +44,23 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void show() {
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.setToOrtho(false, 720, 480);
 
         world = new World(new Vector2(0, 0), false);
         contactListener = new ContactListener();
         world.setContactListener(contactListener);
         b2dr = new Box2DDebugRenderer();
         //border
-        floor = new Floor(world, "FLOOR", (float) Gdx.graphics.getWidth() / 2, -1, Gdx.graphics.getWidth(), 0);
-        sTop = Spawner.box(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), 0, false, world);
-        sLeft = Spawner.box(0, Gdx.graphics.getHeight() / 2, 0, Gdx.graphics.getHeight(), false, world);
-        sRight = Spawner.box(Gdx.graphics.getWidth() + 1, Gdx.graphics.getHeight() / 2, 0, Gdx.graphics.getHeight(), false, world);
+        floor = new Floor(world, "FLOOR", (float) 360, -1, 720, 0);
+        sTop = Spawner.box(360, 480, 720, 0, false, world);
+        sLeft = Spawner.box(0, 240, 0, 480, false, world);
+        sRight = Spawner.box(720 + 1, 240, 0, 480, false, world);
 
         paddle = new Paddle(world, "PADDLE", 360, 15, 150, 10);
 
         bricks = new ArrayList<Brick>();
         for (int i = 0; i < 4; i++) {
-            int y = Gdx.graphics.getHeight() - 25 - 40 * i;
+            int y = 480 - 25 - 40 * i;
             for (int j = 0; j < 9; j++) {
                 int x = 40 + 80 * j;
                 bricks.add(new Brick(world, "BRICK", x, y, 75, 35));
@@ -100,11 +100,6 @@ public class GameScreen extends ScreenAdapter {
         } else if (justCreated != 2) {
             justCreated++;
         }
-    }
-
-    @Override
-    public void hide() {
-        Gdx.input.setInputProcessor(null);
     }
 
     public void resize(int width, int height) {

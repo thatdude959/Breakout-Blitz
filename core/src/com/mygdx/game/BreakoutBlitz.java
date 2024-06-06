@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import screens.TitleScreen;
 
 public class BreakoutBlitz extends Game {
+    public static int initalWidth = 720;
+    public static int initalHeight = (int) ((double) initalWidth * 2/3);
     public SpriteBatch batch;
     public ShapeRenderer shapeRenderer;
     public BitmapFont font;
