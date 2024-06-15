@@ -102,6 +102,7 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    @Override
     public void resize(int width, int height) {
         camera.viewportWidth = 720;
         if ((double) width / (double) height < 1.5) {
